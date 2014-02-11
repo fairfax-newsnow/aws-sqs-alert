@@ -27,6 +27,7 @@ data_files = [('share/aws-sqs-alert', ['LICENSE.txt', 'README.md', 'CHANGES.txt'
 distro = platform.dist()[0]
 distro_major_version = platform.dist()[1].split('.')[0]
 data_files.append(('/etc/aws-sqs-alert', ['sampleconfig.json']))
+data_files.append(('/etc/aws-sqs-alert/handlers', ['README.md']))
 data_files.append(('/etc/init.d', ['bin/init.d/aws-sqs-alert']))
     
 def readme():

@@ -33,6 +33,7 @@ class AWSSQSAlert:
             self.config['AWS_SECRET'] = None
             
         sys.path.append(os.path.dirname(os.path.realpath(__file__)) + '/handlers')
+        sys.path.append('/etc/aws-sqs-alert/handlers')
 
         autoscale_alert_handlers = self.config['active_handlers']
         handlers = []
