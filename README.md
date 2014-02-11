@@ -30,7 +30,7 @@ https://pypi.python.org/pypi/aws-sqs-alert/
 	"region" : "us-east-1",
 	"sleep" : 120,
 	"delete" : false,
-	"queue" : "queuename"
+	"queue" : "queuename",
 	"log" : "/var/log/autoscale-alert.log",
 	"handler_location" : "",
 	"log_level" : "INFO",
