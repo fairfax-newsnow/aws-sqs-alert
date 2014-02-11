@@ -1,0 +1,17 @@
+{
+	"sleep" : 10,
+	"log" : "/var/log/jumpshot/autoscale-alert.log",
+	"log_level" : "INFO",
+	"num_messages" : 10,
+	"active_handlers" : [
+		"chef_handler",
+		"graphite_handler"
+	],
+	"handler_config" : {
+		"chef_handler" : {
+		},
+		"graphite_handler" : {
+			"statsd_host" : "statsd.internal.jumpshot.com"
+		}
+	} 
+}

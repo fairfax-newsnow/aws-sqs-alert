@@ -1,0 +1,5 @@
+.pydevproject
+.project
+build
+dist
+aws_sqs_alert.egg-info

@@ -1,0 +1,89 @@
+#!/usr/bin/python
+"""
+AWS Minions - Autoscale Alerting
+
+Usage:
+autoscale-alert [--AWS_ACCESS=ACCESS_KEY] [--AWS_SECRET=SECRET_KEY] [--debug] [--region=<region>] [<queue>]
+
+Options:
+-h --help  Show this screen.
+--version  Show version.
+--debug  Turn on Debug Logging
+--region=<region>  AWS Region [default: us-east-1]
+<queue>  SQS Queue Name *NOT* ARN
+"""
+import time
+import os
+import sys
+import json
+import logging
+import logstash_formatter
+import boto
+import boto.sqs
+
+from AWSSQSAlert import *
+
+from boto.sqs.message import RawMessage
+from docopt import docopt
+from pprint import pprint
+
+if __name__ == '__main__':
+
+    try:
+        config = json.load(open('/etc/aws-sqs-alert/config.json'))
+    except:
+        raise Exception("Please setup your config.json by copying /etc/aws-sqs-alert/sampleconfig.json to /etc/aws-sqs-alert/config.json and editing.")
+    
+    logger      = logging.getLogger('autoscale-alert')
+    log_handler = logging.handlers.RotatingFileHandler(config['log'], mode='a', maxBytes=104857600, backupCount=10)
+    formatter   = logstash_formatter.LogstashFormatterV1()
+    
+    stream_handler = logging.StreamHandler(sys.stdout)
+    stream_handler.setLevel(logging.INFO)
+    logger.addHandler(stream_handler)
+    
+    log_handler.setFormatter(formatter)
+    logger.setLevel(logging.INFO)
+    logger.addHandler(log_handler)
+    
+    args = docopt(__doc__, options_first=True)
+
+    if config['log_level'].upper() == 'DEBUG':
+        logger.setLevel(logging.DEBUG)
+        stream_handler.setLevel(logging.DEBUG)
+    elif config['log_level'].upper() == 'INFO':
+        logger.setLevel(logging.INFO)
+        stream_handler.setLevel(logging.INFO)
+    elif config['log_level'].upper() == 'CRITICAL':
+        logger.setLevel(logging.CRITICAL)
+        stream_handler.setLevel(logging.CRITICAL)
+    else:
+        logger.setLevel(logging.ERROR)
+        stream_handler.setLevel(logging.ERROR)
+        
+    if args['--debug']:
+        logger.setLevel(logging.DEBUG)
+        stream_handler.setLevel(logging.DEBUG)
+
+    if args['--region']:
+        config['region'] = args['--region']
+    
+    if args['<queue>']:
+        config['queue'] = args['<queue>'] 
+    
+    if args['--AWS_ACCESS']:
+        config['AWS_ACCESS'] = args['--AWS_ACCESS'] 
+        
+    if args['--AWS_SECRET']:
+        config['AWS_SECRET'] = args['--AWS_SECRET']
+
+    sqsalert = AWSSQSAlert(config, logger)
+    
+    while True:
+        
+        logger.debug('Attempting to get Queue Messages', extra=dict(program="autoscale-alert"))
+        
+        sqsalert.get_messages()
+            
+        logger.debug('Sleeping until next iteration.', extra=dict(program="autoscale-alert"))
+        time.sleep(config['sleep'])

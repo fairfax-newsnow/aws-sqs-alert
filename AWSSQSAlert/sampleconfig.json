@@ -1,0 +1,20 @@
+{
+	"region" : "us-east-1",
+	"sleep" : 10,
+	"delete" : true,
+	"log" : "/var/log/autoscale-alert.log",
+	"handler_location" : "",
+	"log_level" : "INFO",
+	"num_messages" : 10,
+	"active_handlers" : [
+		"chef_handler",
+		"graphite_handler"
+	],
+	"handler_config" : {
+		"chef_handler" : {
+		},
+		"graphite_handler" : {
+			"statsd_host" : "statsd.domain.ext"
+		}
+	} 
+}
