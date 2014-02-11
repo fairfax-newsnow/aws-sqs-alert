@@ -13,7 +13,7 @@ class graphite_handler (Handler):
         Create a new instance of the Handler class
         """
         Handler.__init__(self)
-        self.events = ['autoscaling:EC2_INSTANCE_TERMINATE', 'autoscaling:EC2_INSTANCE_LAUNCH', 'autoscaling:EC2_INSTANCE_FAILURE']
+        self.events = ['autoscaling:EC2_INSTANCE_TERMINATE', 'autoscaling:EC2_INSTANCE_LAUNCH', 'autoscaling:EC2_INSTANCE_LAUNCH_ERROR', 'autoscaling:EC2_INSTANCE_TERMINATE_ERROR']
     
     def watches(self, msgtype, event):
         """

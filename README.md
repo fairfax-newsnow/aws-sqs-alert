@@ -54,3 +54,79 @@ sudo aws-sqs-alert --debug Production-MessageQueue-XXXXXXXXXX
 ```
 
 Put your custom handlers in /etc/aws-sqs-alert/handlers/ and edit the config.
+
+--------------------------------------------------------------------
+
+### Cloudformation Examples
+Global Level of Templates
+```json
+{
+    "AWSTemplateFormatVersion" : "2010-09-09",
+    "Description" : "Global Scoping",
+    "Parameters" : { },
+    "Resources" : {
+
+        "MessageQueue" : {
+            "Type" : "AWS::SQS::Queue"
+        },
+        
+        "MessageTopic" : {
+            "Type" : "AWS::SNS::Topic",
+            "Properties" : {
+                "Subscription" : [
+                    {
+                        "Endpoint" : { "Fn::GetAtt" : ["MessageQueue", "Arn"]},
+                        "Protocol" : "sqs"
+                    }
+                ]
+            }
+        },
+
+        "SQSPolicy" : {
+           "Type" : "AWS::SQS::QueuePolicy",
+           "Properties" : {
+              "PolicyDocument" : {
+                 "Id" : "QueuePolicy",
+                 "Statement" : [ {
+                    "Sid":"Allow-SendMessage-To-Both-Queues-From-SNS-Topic",
+                    "Effect":"Allow",           
+                    "Principal" : {"AWS" : "*"},
+                    "Action":["sqs:SendMessage"],
+                    "Resource": "*",
+                    "Condition": {
+                        "ArnEquals": {
+                            "aws:SourceArn": { "Ref" : "MessageTopic" }
+                        }
+                    }
+                  } ]
+              },
+              "Queues" : [{ "Ref" : "MessageQueue" }]
+           }
+        }
+
+    },
+
+    "Outputs" : {
+        
+        "MessageTopic" : {
+            "Value" : { "Ref" : "MessageTopic" },
+            "Description" : "Topic for Message Bus"
+        }
+
+    }
+    
+}
+```
+
+AutoScale Level
+```json
+"ASGServerGroup" : {
+	"Type" : "AWS::AutoScaling::AutoScalingGroup",
+	"Properties" : {
+	    "NotificationConfiguration" : {
+	        "TopicARN" : { "Ref" : "MessageTopic" },
+	        "NotificationTypes" : ["autoscaling:EC2_INSTANCE_LAUNCH", "autoscaling:EC2_INSTANCE_LAUNCH_ERROR", "autoscaling:EC2_INSTANCE_TERMINATE", "autoscaling:EC2_INSTANCE_TERMINATE_ERROR"]
+	    }
+	}
+}
+```
