@@ -42,8 +42,6 @@ class chef_handler (Handler):
 
         instance_id = None
         hostname = None
-
-	msg['EC2InstanceId'] = 'i-a891a088'
         
         reservations = ec2.get_all_instances(instance_ids=[msg['EC2InstanceId']])
         self.logger.debug('chef_handler - Getting Instance information from EC2: %s'%msg['EC2InstanceId'] , extra=dict(program="autoscale-alert", handler="chef_handler", instance_id=msg['EC2InstanceId'], region=region.name))
