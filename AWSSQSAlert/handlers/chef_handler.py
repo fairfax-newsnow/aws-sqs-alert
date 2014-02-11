@@ -1,5 +1,5 @@
-import boto.ec2
 from Handler import Handler
+import boto.ec2
 from pprint import pprint
 from chef import autoconfigure, Node, Client, Search
 from chef.exceptions import ChefServerNotFoundError

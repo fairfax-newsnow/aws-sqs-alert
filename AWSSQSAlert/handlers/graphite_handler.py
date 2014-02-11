@@ -1,6 +1,6 @@
+from Handler import Handler
 import boto.ec2
 from boto.ec2.autoscale import AutoScaleConnection
-from Handler import Handler
 from statsd import StatsClient
 from pprint import pprint
 
@@ -37,7 +37,7 @@ class graphite_handler (Handler):
                 region = r
                 break
         
-        stats = StatsClient("statsd.internal.jumpshot.com")
+        stats = StatsClient(config['region']['graphite_handler']['statsd_host'])
         
         ec2 = boto.connect_autoscale(aws_access_key_id=config['AWS_ACCESS'], aws_secret_access_key=config['AWS_SECRET'], region=region)
         asg = ec2.get_all_groups(names=[msg['AutoScalingGroupName']])
