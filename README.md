@@ -24,7 +24,7 @@ https://pypi.python.org/pypi/aws-sqs-alert/
 
 -------------------------------------------------------------
 
-# Sample Configuration
+# Sample Configuration for /etc/aws-sqs-alert/config.json
 ```json
 {
 	"region" : "us-east-1",
@@ -48,3 +48,9 @@ https://pypi.python.org/pypi/aws-sqs-alert/
 	} 
 }
 ```
+
+```bash
+sudo aws-sqs-alert --debug Production-MessageQueue-XXXXXXXXXX
+```
+
+Put your custom handlers in /etc/aws-sqs-alert/handlers/ and edit the config.
