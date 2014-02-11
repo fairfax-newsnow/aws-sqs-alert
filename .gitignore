@@ -3,3 +3,4 @@
 build
 dist
 aws_sqs_alert.egg-info
+*.pyc
