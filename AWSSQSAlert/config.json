@@ -1,7 +1,9 @@
 {
-	"sleep" : 10,
+	"sleep" : 120,
 	"log" : "/var/log/jumpshot/autoscale-alert.log",
 	"log_level" : "INFO",
+	"queue" : "Staging-MessageQueue-VD7Z8CNJSS0P",
+	"delete" : true,
 	"num_messages" : 10,
 	"active_handlers" : [
 		"chef_handler",

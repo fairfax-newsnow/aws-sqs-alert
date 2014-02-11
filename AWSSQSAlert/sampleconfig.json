@@ -1,7 +1,8 @@
 {
 	"region" : "us-east-1",
-	"sleep" : 10,
+	"sleep" : 120,
 	"delete" : true,
+	"queuename" : "queuename",
 	"log" : "/var/log/autoscale-alert.log",
 	"handler_location" : "",
 	"log_level" : "INFO",

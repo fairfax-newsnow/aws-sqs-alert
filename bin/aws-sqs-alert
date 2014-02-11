@@ -3,7 +3,7 @@
 AWS Minions - Autoscale Alerting
 
 Usage:
-autoscale-alert [--AWS_ACCESS=ACCESS_KEY] [--AWS_SECRET=SECRET_KEY] [--debug] [--region=<region>] [<queue>]
+aws-sqs-alert [--AWS_ACCESS=ACCESS_KEY] [--AWS_SECRET=SECRET_KEY] [--debug] [--region=<region>] [<queue>]
 
 Options:
 -h --help  Show this screen.
