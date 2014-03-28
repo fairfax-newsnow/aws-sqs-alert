@@ -9,6 +9,8 @@ Design for performing actions based on AutoScale messages sent to an SNS queue t
 
 Can also be used to consume CloudWatch Alerts, delete Chef Nodes/Clients on terminate and update statsD metrics.
 
+This requires Python 2.7x due to something with my import strategy.
+
 # Stable Version
 ```bash
 pip install aws-sqs-alert
@@ -56,6 +58,12 @@ sudo aws-sqs-alert --debug Production-MessageQueue-XXXXXXXXXX
 Put your custom handlers in /etc/aws-sqs-alert/handlers/ and edit the config.
 
 --------------------------------------------------------------------
+
+### Chef Changes
+```ruby
+node.set['instance_id'] = %x[curl http://169.254.169.254/latest/meta-data/instance-id]
+```
+Make sure that all instances have an instance_id, you cannot tell IP or other unique information after the termination.
 
 ### Cloudformation Examples
 Global Level of Templates

@@ -67,7 +67,7 @@ class AWSSQSAlert:
         self._connect()
             
         found_handler = False
-        self.logger.debug('Attempting to get Queue Messages', extra=dict(program="autoscale-alert"))
+        self.logger.debug('Attempting to get Queue Messages from %s'%self.config['queue'], extra=dict(program="autoscale-alert"))
         messages = self.queue.get_messages(num_messages=self.config['num_messages'])
      
         for msg in messages:
