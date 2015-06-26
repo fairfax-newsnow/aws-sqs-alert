@@ -26,10 +26,20 @@ if sys.version_info <= (2, 4):
 data_files = [('share/aws-sqs-alert', ['LICENSE.txt', 'README.md', 'CHANGES.txt'])]
 distro = platform.dist()[0]
 distro_major_version = platform.dist()[1].split('.')[0]
-data_files.append(('/etc/aws-sqs-alert', ['sampleconfig.json']))
-data_files.append(('/etc/aws-sqs-alert/handlers', ['README.md']))
-data_files.append(('/etc/init.d', ['bin/init.d/aws-sqs-alert']))
-    
+
+# Detect is we're working inside a virualenv
+# http://stackoverflow.com/a/1883251/4843840
+conf_prefix = '/'
+if hasattr(sys, 'real_prefix'):
+    conf_prefix = sys.prefix
+
+data_files.append(
+    (os.path.join(conf_prefix, 'etc/aws-sqs-alert'), ['sampleconfig.json']))
+data_files.append(
+    (os.path.join(conf_prefix, 'etc/aws-sqs-alert/handlers'), ['README.md']))
+data_files.append(
+    (os.path.join(conf_prefix, 'etc/init.d'), ['bin/init.d/aws-sqs-alert']))
+
 def readme():
     with open("README.md") as f:
         return f.read()
@@ -45,7 +55,7 @@ setup(name = "aws-sqs-alert",
       packages = ["AWSSQSAlert", "AWSSQSAlert.handlers", "AWSSQSAlert.test"],
       package_data = {},
       data_files=data_files,
-      install_requires=['boto', 'logstash_formatter', 'statsd'],
+      install_requires=['boto', 'logstash_formatter', 'statsd', 'docopt'],
       license = "GPLv2",
       platforms = "Posix; MacOS X; Windows",
       classifiers = ["Intended Audience :: Developers",

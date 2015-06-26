@@ -1,15 +1,16 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 """
 AWS Minions - Autoscale Alerting
 
 Usage:
-aws-sqs-alert [--AWS_ACCESS=ACCESS_KEY] [--AWS_SECRET=SECRET_KEY] [--debug] [--region=<region>] [<queue>]
+aws-sqs-alert [--AWS_ACCESS=ACCESS_KEY] [--AWS_SECRET=SECRET_KEY] [--debug] [--config=<config_file>] [--region=<region>] [<queue>]
 
 Options:
 -h --help  Show this screen.
 --version  Show version.
 --debug  Turn on Debug Logging
 --region=<region>  AWS Region [default: us-east-1]
+--config=<config_file> Alternative config file location
 <queue>  SQS Queue Name *NOT* ARN
 """
 import time
@@ -29,10 +30,24 @@ from pprint import pprint
 
 if __name__ == '__main__':
 
+    args = docopt(__doc__, options_first=True)
+
+    # Detect is we're working inside a virualenv
+    conf_prefix = '/'
+    if hasattr(sys, 'real_prefix'):
+        conf_prefix = sys.prefix
+
+    config_file = args['--config']
+    if not config_file:
+        config_file = os.path.join(conf_prefix, 'etc/aws-sqs-alert/config.json')
+
     try:
-        config = json.load(open('/etc/aws-sqs-alert/config.json'))
+        config = json.load(open(config_file, 'r'))
     except:
-        raise Exception("Please setup your config.json by copying /etc/aws-sqs-alert/sampleconfig.json to /etc/aws-sqs-alert/config.json and editing.")
+        raise Exception(
+            "Please setup your config file by copying %s to %s and editing." % (
+                os.path.join(conf_prefix, "etc/aws-sqs-alert/sampleconfig.json"),
+                config_file))
     
     logger      = logging.getLogger('autoscale-alert')
     log_handler = logging.handlers.RotatingFileHandler(config['log'], mode='a', maxBytes=104857600, backupCount=10)
@@ -46,8 +61,6 @@ if __name__ == '__main__':
     logger.setLevel(logging.INFO)
     logger.addHandler(log_handler)
     
-    args = docopt(__doc__, options_first=True)
-
     if config['log_level'].upper() == 'DEBUG':
         logger.setLevel(logging.DEBUG)
         stream_handler.setLevel(logging.DEBUG)
